@@ -1,25 +1,27 @@
-;(function(factory, w, d) {
+;(function(factory) {
+  var w = (0, eval)('this');
   var MODULE_NAME = 'filednd',
       registered = false;
   if (typeof define === 'function' && define.amd) {
-    define(factory.bind(this, w, d));
+    define(factory.bind(this, w));
     registered = true;
   }
   if (typeof exports === 'object') {
-    module.exports = factory(w, d);
+    module.exports = factory(w);
     registered = true;
   }
   if (registered) { return; }
   var old = w[MODULE_NAME],
-      api = w[MODULE_NAME] = factory(w, d);
+      api = w[MODULE_NAME] = factory(w);
   api.noConflict = function () {
     w[MODULE_NAME] = old;
     return api;
   };
-})(function(window, document) {
-
+})(function(global) {
+  var window = global,
+      document = window.document;
   function _Emitter() {
-    var f = document.createDocumentFragment();
+    var f = window.document.createDocumentFragment();
     function d(m) {
       this[m] = f[m].bind(f);
     }
@@ -76,7 +78,7 @@
     this._attachEvent();
   };
 
-  FileDnD.prototype._attachEvent() = function() {
+  FileDnD.prototype._attachEvent = function() {
     var _this = this,
         dndzone = _this.dndzone;
 
@@ -187,4 +189,4 @@
 
   return FileDnD;
   
-}, window, document);
+});
