@@ -52,30 +52,64 @@
   function FileDnD(dndzone, configure) {
     _Emitter.call(this);
 
-    var _this = this;
     this._dndzone = dndzone;
     this._files = [];
     this._preview = configure.preview;
     this._dragoverClass = configure.dragoverClass;
+    this._isFileElement = false;
 
-    dndzone.addEventListener('dragover', function(e) {
-      _utils.stopEvent(e);
-      _utils.addClass(dndzone, _this._dragoverClass);
-    });
-    dndzone.addEventListener('dragleave', function(e) {
-      _utils.stopEvent(e);
-      _utils.removeClass(dndzone, _this._dragoverClass);
-    });
-    dndzone.addEventListener('drop', function(e) {
-      _utils.stopEvent(e);
-      _utils.removeClass(dndzone, _this._dragoverClass);
-      _this.clearFiles();
-      _this._files = e.dataTransfer.files;
-      _this.previewFiles();
-      _this.dispatchEvent(new CustomEvent('uploadend', {
-        detail: _this.getFiles()
-      }));
-    });
+    if (!(dndzone instanceof HTMLElement)) {
+      throw {
+        name: 'NotHTMLElementError',
+        message: 'constructor paramater "dndzone" is not extends HTMLElement.'
+      };
+    }
+    if (dndzone instanceof HTMLInputElement) {
+      if (dndzone.type === 'file') {
+        this._isFileElement = true;
+      }
+      throw {
+        name: 'NotFileDroppableElementError',
+        message: 'paramater "dndzone" is not dropable HTMLElement.'
+      };
+    }
+    this._attachEvent();
+  };
+
+  FileDnD.prototype._attachEvent() = function() {
+    var _this = this,
+        dndzone = _this.dndzone;
+
+    if (this._isFileElement) {
+      dndzone.addEventListener('change', function(e) {
+        _utils.removeClass(dndzone, _this._dragoverClass);
+        _this.clearFiles();
+        _this._files = e.files;
+        _this.previewFiles();
+        _this.dispatchEvent(new CustomEvent('uploadend', {
+          detail: _this.getFiles()
+        }));
+      });
+    } else {
+      dndzone.addEventListener('dragover', function(e) {
+        _utils.stopEvent(e);
+        _utils.addClass(dndzone, _this._dragoverClass);
+      });
+      dndzone.addEventListener('dragleave', function(e) {
+        _utils.stopEvent(e);
+        _utils.removeClass(dndzone, _this._dragoverClass);
+      });
+      dndzone.addEventListener('drop', function(e) {
+        _utils.stopEvent(e);
+        _utils.removeClass(dndzone, _this._dragoverClass);
+        _this.clearFiles();
+        _this._files = e.dataTransfer.files;
+        _this.previewFiles();
+        _this.dispatchEvent(new CustomEvent('uploadend', {
+          detail: _this.getFiles()
+        }));
+      });
+    }
   };
 
   /**
