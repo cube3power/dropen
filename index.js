@@ -1,5 +1,5 @@
 ;(function(factory, w, d) {
-  var MODULE_NAME = 'FileDnD',
+  var MODULE_NAME = 'filednd',
       registered = false;
   if (typeof define === 'function' && define.amd) {
     define(factory.bind(this, w, d));
