@@ -1,4 +1,6 @@
 ;(function(factory) {
+  'use strict';
+  
   var w = (0, eval)('this');
   var MODULE_NAME = 'filednd',
       registered = false;
@@ -18,6 +20,8 @@
     return api;
   };
 })(function(global) {
+  'use strict';
+  
   var window = global,
       document = window.document;
   function _Emitter() {
