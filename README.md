@@ -11,6 +11,17 @@ npm install --save @kashira2339/filednd
 
 ## Usage
 
+### function & properties
+
+- **FileDnD** constructor function.
+  - **el** `string|HTMLElement|HTMLInputElement` Drop target element. ex) `#area` `input[type="file"]`
+  - **configure** Configure paramaters.
+    - **preview** `string|HTMLElement|` Into preview images target element.
+    - **dragoverClass** `string` Class of want append when dragover "el".
+
+### custom events
+- **uploadend** Will dispatch after File dropped or file selected.
+
 ```html
 <style>
  div {
