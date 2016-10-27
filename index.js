@@ -84,7 +84,7 @@
 
   FileDnD.prototype._attachEvent = function() {
     var _this = this,
-        dndzone = _this.dndzone;
+        dndzone = _this._dndzone;
 
     if (this._isFileElement) {
       dndzone.addEventListener('change', function(e) {
