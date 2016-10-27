@@ -37,9 +37,9 @@
    * Create drag & drop zone for file,
    * and preview read file after file upload.
    *
-   * @param {HTMLElement} dndzone       To define drag & drop file zone element.
-   * @param {object}      configure     configure settings 
-   * @prop  {HTMLElement} preview       To preview HTMLImageElement's into this element.
+   * @param {string|HTMLElement} el To define drag & drop file zone element or selector.
+   * @param {object} configure configure settings 
+   * @prop  {HTMLElement} preview To preview HTMLImageElement's into this element.
    * @prop  {string}      dragoverClass Adding class to dndzone when dispached dragover event on dndzone.
    * @example
    *   var dndzone = document.getElementById('drag-and-drop-zone');
@@ -55,26 +55,44 @@
    *
    * @constructor
    */
-  function FileDnD(dndzone, configure) {
+  function FileDnD(el, configure) {
     _Emitter.call(this);
 
-    this._dndzone = dndzone;
+    if (el instanceof HTMLElement) {
+      if (el instanceof HTMLInputElement) {
+        if (el.type !== 'file') {
+          throw TypeError('"el" is HTMLElement but not input[type="file"].');
+        }
+        this._isFileElement = true;
+      }
+      this._el = el;
+    }
+    if (el instanceof String) {
+      var _el = document.querySelector(el);
+      if (!_el) {
+          throw Error('Not found in document.querySelector(el)');
+      }
+      this._el = _el;
+    }
+    if (!this._el) {
+      throw TypeError('"el" is not HTMLElement.');
+    }
     this._files = [];
     this._preview = configure.preview;
     this._dragoverClass = configure.dragoverClass;
     this._isFileElement = false;
 
-    if (!(dndzone instanceof HTMLElement)) {
+    if (!(el instanceof HTMLElement)) {
       throw {
         name: 'NotHTMLElementError',
-        message: 'constructor paramater "dndzone" is not extends HTMLElement.'
+        message: 'constructor paramater "el" is not extends HTMLElement.'
       };
     }
-    if (dndzone instanceof HTMLInputElement) {
-      if (dndzone.type !== 'file') {
+    if (el instanceof HTMLInputElement) {
+      if (el.type !== 'file') {
         throw {
           name: 'NotFileDroppableElementError',
-          message: 'paramater "dndzone" is not dropable HTMLElement.'
+          message: 'paramater "el" is not dropable HTMLElement.'
         };
       }
       this._isFileElement = true;
@@ -84,11 +102,11 @@
 
   FileDnD.prototype._attachEvent = function() {
     var _this = this,
-        dndzone = _this._dndzone;
+        el = _this._el;
 
     if (this._isFileElement) {
-      dndzone.addEventListener('change', function(e) {
-        _utils.removeClass(dndzone, _this._dragoverClass);
+      el.addEventListener('change', function(e) {
+        _utils.removeClass(el, _this._dragoverClass);
         _this.clearFiles();
         _this._files = e.target.files;
         _this.previewFiles();
@@ -97,17 +115,17 @@
         }));
       });
     } else {
-      dndzone.addEventListener('dragover', function(e) {
+      el.addEventListener('dragover', function(e) {
         _utils.stopEvent(e);
-        _utils.addClass(dndzone, _this._dragoverClass);
+        _utils.addClass(el, _this._dragoverClass);
       });
-      dndzone.addEventListener('dragleave', function(e) {
+      el.addEventListener('dragleave', function(e) {
         _utils.stopEvent(e);
-        _utils.removeClass(dndzone, _this._dragoverClass);
+        _utils.removeClass(el, _this._dragoverClass);
       });
-      dndzone.addEventListener('drop', function(e) {
+      el.addEventListener('drop', function(e) {
         _utils.stopEvent(e);
-        _utils.removeClass(dndzone, _this._dragoverClass);
+        _utils.removeClass(el, _this._dragoverClass);
         _this.clearFiles();
         _this._files = e.dataTransfer.files;
         _this.previewFiles();
@@ -122,7 +140,7 @@
    * Get HTMLElement: drag and drop zone's element.
    */
   FileDnD.prototype.getDragAndDropZone = function() {
-    return this._dndzone;
+    return this._el;
   };
 
   /**
