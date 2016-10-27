@@ -1,25 +1,31 @@
-;(function(factory, w, d) {
-  var MODULE_NAME = 'FileDnD',
+;(function(factory) {
+  'use strict';
+  
+  var w = (0, eval)('this');
+  var MODULE_NAME = 'filednd',
       registered = false;
   if (typeof define === 'function' && define.amd) {
-    define(factory.bind(this, w, d));
+    define(factory.bind(this, w));
     registered = true;
   }
   if (typeof exports === 'object') {
-    module.exports = factory(w, d);
+    module.exports = factory(w);
     registered = true;
   }
   if (registered) { return; }
   var old = w[MODULE_NAME],
-      api = w[MODULE_NAME] = factory(w, d);
+      api = w[MODULE_NAME] = factory(w);
   api.noConflict = function () {
     w[MODULE_NAME] = old;
     return api;
   };
-})(function(window, document) {
-
+})(function(global) {
+  'use strict';
+  
+  var window = global,
+      document = window.document;
   function _Emitter() {
-    var f = document.createDocumentFragment();
+    var f = window.document.createDocumentFragment();
     function d(m) {
       this[m] = f[m].bind(f);
     }
@@ -52,30 +58,64 @@
   function FileDnD(dndzone, configure) {
     _Emitter.call(this);
 
-    var _this = this;
     this._dndzone = dndzone;
     this._files = [];
     this._preview = configure.preview;
     this._dragoverClass = configure.dragoverClass;
+    this._isFileElement = false;
 
-    dndzone.addEventListener('dragover', function(e) {
-      _utils.stopEvent(e);
-      _utils.addClass(dndzone, _this._dragoverClass);
-    });
-    dndzone.addEventListener('dragleave', function(e) {
-      _utils.stopEvent(e);
-      _utils.removeClass(dndzone, _this._dragoverClass);
-    });
-    dndzone.addEventListener('drop', function(e) {
-      _utils.stopEvent(e);
-      _utils.removeClass(dndzone, _this._dragoverClass);
-      _this.clearFiles();
-      _this._files = e.dataTransfer.files;
-      _this.previewFiles();
-      _this.dispatchEvent(new CustomEvent('uploadend', {
-        detail: _this.getFiles()
-      }));
-    });
+    if (!(dndzone instanceof HTMLElement)) {
+      throw {
+        name: 'NotHTMLElementError',
+        message: 'constructor paramater "dndzone" is not extends HTMLElement.'
+      };
+    }
+    if (dndzone instanceof HTMLInputElement) {
+      if (dndzone.type === 'file') {
+        this._isFileElement = true;
+      }
+      throw {
+        name: 'NotFileDroppableElementError',
+        message: 'paramater "dndzone" is not dropable HTMLElement.'
+      };
+    }
+    this._attachEvent();
+  };
+
+  FileDnD.prototype._attachEvent = function() {
+    var _this = this,
+        dndzone = _this.dndzone;
+
+    if (this._isFileElement) {
+      dndzone.addEventListener('change', function(e) {
+        _utils.removeClass(dndzone, _this._dragoverClass);
+        _this.clearFiles();
+        _this._files = e.files;
+        _this.previewFiles();
+        _this.dispatchEvent(new CustomEvent('uploadend', {
+          detail: _this.getFiles()
+        }));
+      });
+    } else {
+      dndzone.addEventListener('dragover', function(e) {
+        _utils.stopEvent(e);
+        _utils.addClass(dndzone, _this._dragoverClass);
+      });
+      dndzone.addEventListener('dragleave', function(e) {
+        _utils.stopEvent(e);
+        _utils.removeClass(dndzone, _this._dragoverClass);
+      });
+      dndzone.addEventListener('drop', function(e) {
+        _utils.stopEvent(e);
+        _utils.removeClass(dndzone, _this._dragoverClass);
+        _this.clearFiles();
+        _this._files = e.dataTransfer.files;
+        _this.previewFiles();
+        _this.dispatchEvent(new CustomEvent('uploadend', {
+          detail: _this.getFiles()
+        }));
+      });
+    }
   };
 
   /**
@@ -153,4 +193,4 @@
 
   return FileDnD;
   
-}, window, document);
+});
