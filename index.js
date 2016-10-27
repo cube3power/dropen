@@ -109,7 +109,9 @@
         _utils.removeClass(el, _this._dragoverClass);
         _this.clearFiles();
         _this._files = e.target.files;
-        _this.previewFiles();
+        if (_this._preview) {
+          _this.previewFiles();
+        }
         _this.dispatchEvent(new CustomEvent('uploadend', {
           detail: _this.getFiles()
         }));
@@ -128,7 +130,9 @@
         _utils.removeClass(el, _this._dragoverClass);
         _this.clearFiles();
         _this._files = e.dataTransfer.files;
-        _this.previewFiles();
+        if (_this._preview) {
+          _this.previewFiles();
+        }
         _this.dispatchEvent(new CustomEvent('uploadend', {
           detail: _this.getFiles()
         }));
@@ -169,6 +173,9 @@
    * Preview uplaoded files.
    */
   FileDnD.prototype.previewFiles = function() {
+    if (!this._preview) {
+      throw Error('Not configure option: preview');
+    }
     var fragment = document.createDocumentFragment();
       for (var i = 0, f; f = this._files[i]; i++) {
         (function(i) {
