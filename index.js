@@ -71,13 +71,13 @@
       };
     }
     if (dndzone instanceof HTMLInputElement) {
-      if (dndzone.type === 'file') {
-        this._isFileElement = true;
+      if (dndzone.type !== 'file') {
+        throw {
+          name: 'NotFileDroppableElementError',
+          message: 'paramater "dndzone" is not dropable HTMLElement.'
+        };
       }
-      throw {
-        name: 'NotFileDroppableElementError',
-        message: 'paramater "dndzone" is not dropable HTMLElement.'
-      };
+      this._isFileElement = true;
     }
     this._attachEvent();
   };
