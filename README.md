@@ -28,7 +28,8 @@ npm install --save @kashira2339/filednd
 
 
 ```js
-var FileDnD = require('filednd');
+// if use javascript module bundler
+var FileDnD = require('@kashira2339/filednd');
 
 var dropZone    = document.getElementById('drop-zone');
 var previewZone = document.getElementById('preview-zone');
