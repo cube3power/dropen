@@ -1,7 +1,6 @@
-# FileDnD
+# FileDnD [![Build Status](https://travis-ci.org/kashira2339/filednd.svg?branch=master)](https://travis-ci.org/kashira2339/filednd)
 
-[![Build Status](https://travis-ci.org/kashira2339/filednd.svg?branch=master)](https://travis-ci.org/kashira2339/filednd)
-
+**filednd** is lightweight JavaScript ui library for Drag & Drop File.
 
 ## Installation
 
