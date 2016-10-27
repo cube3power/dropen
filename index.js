@@ -90,7 +90,7 @@
       dndzone.addEventListener('change', function(e) {
         _utils.removeClass(dndzone, _this._dragoverClass);
         _this.clearFiles();
-        _this._files = e.files;
+        _this._files = e.target.files;
         _this.previewFiles();
         _this.dispatchEvent(new CustomEvent('uploadend', {
           detail: _this.getFiles()
