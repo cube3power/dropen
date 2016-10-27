@@ -40,14 +40,14 @@
    * @param {string|HTMLElement} el To define drag & drop file zone element or selector.
    * @param {object} configure configure settings 
    * @prop  {HTMLElement} preview To preview HTMLImageElement's into this element.
-   * @prop  {string}      dragoverClass Adding class to dndzone when dispached dragover event on dndzone.
+   * @prop  {string} dragoverClass Adding class to dndzone when dispached dragover event on dndzone.
    * @example
-   *   var dndzone = document.getElementById('drag-and-drop-zone');
+   *   var el      = document.getElementById('drag-and-drop-zone');
    *   var preview = document.getElementById('preview-zone'); 
    *
-   *   var dnd = new FileDnD(dd, {
+   *   var dnd = new FileDnD(el, {
    *     preview: preview,
-   *     dragoverClass: 'highlight'
+   *     dragoverClass: 'emphasis'
    *   });
    *   dnd.addEventListener('uploadend', function(e) {
    *     console.log(e.detail);
@@ -57,22 +57,23 @@
    */
   function FileDnD(el, configure) {
     _Emitter.call(this);
-
+    console.log();
     if (el instanceof HTMLElement) {
-      if (el instanceof HTMLInputElement) {
-        if (el.type !== 'file') {
-          throw TypeError('"el" is HTMLElement but not input[type="file"].');
-        }
-        this._isFileElement = true;
-      }
-      this._el = el;
+      this._isFileElement = false;
+      this._el = _el;
     }
-    if (el instanceof String) {
+    if (typeof el === 'string') {
       var _el = document.querySelector(el);
       if (!_el) {
           throw Error('Not found in document.querySelector(el)');
       }
       this._el = _el;
+    }
+    if (this._el instanceof HTMLInputElement) {
+      if (this._el.type !== 'file') {
+        throw TypeError('"el" is HTMLElement but not input[type="file"].');
+      }
+      this._isFileElement = true;
     }
     if (!this._el) {
       throw TypeError('"el" is not HTMLElement.');
@@ -80,26 +81,12 @@
     this._files = [];
     this._preview = configure.preview;
     this._dragoverClass = configure.dragoverClass;
-    this._isFileElement = false;
-
-    if (!(el instanceof HTMLElement)) {
-      throw {
-        name: 'NotHTMLElementError',
-        message: 'constructor paramater "el" is not extends HTMLElement.'
-      };
-    }
-    if (el instanceof HTMLInputElement) {
-      if (el.type !== 'file') {
-        throw {
-          name: 'NotFileDroppableElementError',
-          message: 'paramater "el" is not dropable HTMLElement.'
-        };
-      }
-      this._isFileElement = true;
-    }
     this._attachEvent();
   };
 
+  /**
+   * Attach event to "el" (HTMLElement)
+   */
   FileDnD.prototype._attachEvent = function() {
     var _this = this,
         el = _this._el;
@@ -177,18 +164,16 @@
       throw Error('Not configure option: preview');
     }
     var fragment = document.createDocumentFragment();
-      for (var i = 0, f; f = this._files[i]; i++) {
-        (function(i) {
-          var reader = new FileReader(),
-              img = document.createElement('img');
-          reader.readAsDataURL(f);
-          reader.onloadend = function() {
-            img.src = reader.result;
-          };
-          fragment.appendChild(img);
-        })(i);
-      }
-      this._preview.appendChild(fragment);
+    Array.prototype.forEach.call(this._files, function(f) {
+      var reader = new FileReader(),
+          img = document.createElement('img');
+      reader.readAsDataURL(f);
+      reader.onloadend = function() {
+        img.src = reader.result;
+      };
+      fragment.appendChild(img);
+    });
+    this._preview.appendChild(fragment);
   };
 
   var _utils = {
