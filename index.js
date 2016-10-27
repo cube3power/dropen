@@ -2,7 +2,7 @@
   'use strict';
   
   var w = (0, eval)('this');
-  var MODULE_NAME = 'filednd',
+  var MODULE_NAME = 'FileDnD',
       registered = false;
   if (typeof define === 'function' && define.amd) {
     define(factory.bind(this, w));
