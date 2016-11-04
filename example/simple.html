@@ -19,6 +19,10 @@
        imageMinWidth: '100%',
        imageMaxWidth: '100%',
      });
+
+     filednd.addEventListener('uploadend', function(e) {
+       alert('Uploaded: ' + e.detail[0].name);
+     });
     </script>
   </body>
 </html>

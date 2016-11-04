@@ -77,6 +77,14 @@ var instance = new FileDnD('#drop-zone', {
     imageMaxHeight: '100%',
 
 });
+
+/**
+ * Listen custom event, define as below.
+ */
+instance.addEventListener('uploadend', function(e) {
+  alert('Uploaded: ' + e.detail[0].name);
+});
+
 ```
 
 ![demo](https://cloud.githubusercontent.com/assets/7392701/19778989/2a93eefa-9cba-11e6-84fd-19c0f0060c57.gif)
