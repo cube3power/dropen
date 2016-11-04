@@ -63,21 +63,21 @@
    * @constructor
    */
   function FileDnD(el, configure) {
-    var _configure = configure || {};
+    var _configure = configure || {},
+        _el = _utils.makeElement(el);
     
     _Emitter.call(this);
 
-    if (el instanceof HTMLElement) {
-      this._isFileElement = false;
-    }
-    if (this._el instanceof HTMLInputElement) {
-      if (this._el.type !== 'file') {
+    this._isFileElement = false;
+
+    if (_el instanceof HTMLInputElement) {
+      if (_el.type !== 'file') {
         throw TypeError('"el" is HTMLElement but not input[type="file"].');
       }
       this._isFileElement = true;
     }
 
-    this._el = _utils.makeElement(el);
+    this._el = _el;
     
     this._files = [];
 
