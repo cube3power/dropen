@@ -1,5 +1,5 @@
 {
-  "name": "@kashira2339/filednd",
+  "name": "kashira2339-filednd",
   "description": "Filednd is lightweight JavaScript ui library for File Drag & Drop.",
   "main": "index.js",
   "authors": [
