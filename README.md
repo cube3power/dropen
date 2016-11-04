@@ -17,6 +17,10 @@ npm install --save @kashira2339/filednd
   - **configure** Configure paramaters.
     - **preview** `string|HTMLElement|` Into preview images target element.
     - **dragoverClass** `string` Class of want append when dragover "el".
+    - **imageMinWidth** `string` min-width of preview's <img>. default null.
+    - **imageMinHeight** `string` min-height of preview's <img>. default null.
+    - **imageMaxWidth** `string` max-width of preview's <img>. default null.
+    - **imageMaxHeight** `string` max-height of preview's <img>. default null.
 
 ### custom events
 - **uploadend** Will dispatch after File dropped or file selected.
@@ -31,9 +35,9 @@ npm install --save @kashira2339/filednd
  }
 </style>
 
-<div id="drop-zone card">Drag & Drop to this element!</div>
+<div id="drop-zone">Drag & Drop to this element!</div>
 
-<div id="preview-zone card">Will preview image.</div>
+<div id="preview-zone">Will preview image.</div>
 ```
 
 
@@ -41,20 +45,36 @@ npm install --save @kashira2339/filednd
 // if use javascript module bundler
 var FileDnD = require('@kashira2339/filednd');
 
-var dropZone    = document.getElementById('drop-zone');
-var previewZone = document.getElementById('preview-zone');
-
-var instance = new FileDnD(dropZone, {
+var instance = new FileDnD('#drop-zone', {
 
     /**
-     * for preview HTMLElement
+     * for preview HTMLElement or selector.
      */
-    preview: previewZone,
+    preview: '#preview-zone',
     
     /**
      * for add class when file dragover "dropZone".
      */
-    dragoverClass: 'emphasis'
+    dragoverClass: 'emphasis',
+
+    /**
+     * set preview image styles.
+     * ex)
+     * image {
+     *   min-width: 100px;
+     *   min-height: 100px;
+     *   man-width: 100%;
+     *   max-height: 100%;
+     * }
+     *
+     */
+    imageMinWidth: '100px',
+
+    imageMinHeight: '100px',
+
+    imageMaxWidth: '100%',
+
+    imageMaxHeight: '100%',
 
 });
 ```
