@@ -11,17 +11,19 @@
 
     <div id="preview-zone" class="simple-card">Will preview image.</div>
 
-    <script src="../index.js"></script>
+    <script src="../../index.js"></script>
     <script>
      var filednd = new FileDnD('#drop-zone', {
        preview: '#preview-zone',
        dragoverClass: 'emphasis',
        imageMinWidth: '100%',
        imageMaxWidth: '100%',
+       imageMinHeight: '100%',
+       imageMaxHeight: '100%',
      });
 
      filednd.addEventListener('uploadend', function(e) {
-       alert('Uploaded: ' + e.detail[0].name);
+       console.log(e.detail);
      });
     </script>
   </body>

@@ -24,7 +24,7 @@
   
   var window = global,
       document = window.document;
-  function _Emitter() {
+  function _emitter() {
     var f = window.document.createDocumentFragment();
     function d(m) {
       this[m] = f[m].bind(f);
@@ -41,6 +41,8 @@
    * @param {object} [configure] configure settings 
    * @prop  {HTMLElement} [preview] To preview HTMLImageElement's into this element.
    * @prop  {string} [dragoverClass] Adding class to dndzone when dispached dragover event on dndzone.
+   * @prop  {boolean} [autoPreview] will automatically preview when `el` get files. default true.
+   * @prop  {boolean} [autoRefresh] will automatically refresh preview element when files uploaded. default true.
    * @prop  {string} [imageMinWidth] min-width of preview's <img>. default null.
    * @prop  {string} [imageMinHeight] min-height of preview's <img>. default null.
    * @prop  {string} [imageMaxWidth] max-width of preview's <img>. default null.
@@ -51,6 +53,8 @@
    *   var dnd = new FileDnD(el, {
    *     preview: preview,
    *     dragoverClass: 'emphasis',
+   *     autoPreview: true
+   *     autoRefresh: true
    *     imageMinWidth: '100px',
    *     imageMinHeight: '100px',
    *     imageMaxWidth: '100%',
@@ -66,7 +70,7 @@
     var _configure = configure || {},
         _el = _utils.makeElement(el);
     
-    _Emitter.call(this);
+    _emitter.call(this);
 
     this._isFileElement = false;
 
@@ -89,6 +93,12 @@
       this._dragoverClass = _configure.dragoverClass;
     }
 
+    this._autoPreview = typeof _configure.autoPreview === 'undefined' ?
+      true : _configure.autoPreview;
+
+    this._autoRefresh = typeof _configure.autoRefresh === 'undefined' ?
+      true : _configure.autoRefresh;
+
     this._imageMinWidth  = _configure.imageMinWidth  || null;
     this._imageMinHeight = _configure.imageMinHeight || null;
     this._imageMaxWidth  = _configure.imageMaxWidth  || null;
@@ -106,12 +116,26 @@
 
     if (this._isFileElement) {
       el.addEventListener('change', function(e) {
-        _utils.removeClass(el, _this._dragoverClass);
-        _this.clearFiles();
-        _this._files = e.target.files;
-        if (_this._preview) {
-          _this.previewFiles();
+
+        _this.dispatchEvent(new CustomEvent('upload', {
+          detail: e
+        }));
+        
+        if (_this._dragoverClass) {
+          _utils.removeClass(el, _this._dragoverClass);
         }
+
+        if (_this._autoRefresh) {
+          _this.clearFiles();
+          _this.applyToHTML();
+        }
+        
+        _this.addFiles(e.target.files);
+
+        if (_this._autoPreview) {
+          _this.applyToHTML();
+        }
+        
         _this.dispatchEvent(new CustomEvent('uploadend', {
           detail: _this.getFiles()
         }));
@@ -131,14 +155,26 @@
       });
       el.addEventListener('drop', function(e) {
         _utils.stopEvent(e);
+
+        _this.dispatchEvent(new CustomEvent('upload', {
+          detail: e
+        }));
+        
         if (_this._dragoverClass) {
           _utils.removeClass(el, _this._dragoverClass);
         }
-        _this.clearFiles();
-        _this._files = e.dataTransfer.files;
-        if (_this._preview) {
-          _this.previewFiles();
+
+        if (_this._autoRefresh) {
+          _this.clearFiles();
+          _this.applyToHTML();
         }
+        
+        _this.addFiles(e.dataTransfer.files);
+        
+        if (_this._autoPreview) {
+          _this.applyToHTML();
+        }
+        
         _this.dispatchEvent(new CustomEvent('uploadend', {
           detail: _this.getFiles()
         }));
@@ -168,41 +204,121 @@
   };
 
   /**
+   * Add file list.
+   * @param {Array} files Files from drag and drop or input[type=file] changed.
+   */
+  FileDnD.prototype.addFiles = function(files) {
+    var _this = this;
+    if (files instanceof Array || files instanceof FileList) {
+      [].filter.call(files, function(f) {
+        return f instanceof File || f instanceof Blob;
+      }).forEach(function(f) {
+        _this.addFile(f);
+      });
+    }
+    if (files instanceof File || files instanceof Blob) {
+      _this.addFile(files);
+    }
+  };
+
+  /**
+   * Add a file.
+   * @param {File|Blob} file push to FileDnD#_files
+   */
+  FileDnD.prototype.addFile = function(file) {
+    if (file instanceof File || file instanceof Blob) {
+      this._files.push(file);
+    }
+  };
+
+  /**
    * Clear uploaded file list and preview zone.
    */
   FileDnD.prototype.clearFiles = function() {
     this._files = [];
-    this._preview.innerHTML = '';
+  };
+
+  /**
+   * Has files apply to html source
+   */
+  FileDnD.prototype.applyToHTML = function() {
+    if (this._preview) {
+      this.removeFromPreviewHTML();
+      this.appendToPreviewHTML();
+    }
+  };
+
+  /**
+   * remove html from preview element.
+   */
+  FileDnD.prototype.removeFromPreviewHTML = function() {
+    if (this._preview) {
+      this._preview.innerHTML = '';
+    }
   };
 
   /**
    * Preview uplaoded files.
    */
-  FileDnD.prototype.previewFiles = function() {
+  FileDnD.prototype.appendToPreviewHTML = function() {
     var _this = this;
     if (!_this._preview) {
       throw Error('Not configure option: preview');
     }
     var fragment = document.createDocumentFragment();
+
     Array.prototype.forEach.call(_this._files, function(f) {
 
-      var reader = new FileReader(),
-          img = document.createElement('img');
+      var obj = _previewElementFactory(f);
 
-      reader.readAsDataURL(f);
+      obj.style['min-width']  = _this._imageMinWidth;
+      obj.style['min-height'] = _this._imageMinHeight;
+      obj.style['max-width']  = _this._imageMaxWidth;
+      obj.style['max-height'] = _this._imageMaxHeight;
 
-      reader.onloadend = function() {
-        img.style['min-width']  = _this._imageMinWidth;
-        img.style['min-height'] = _this._imageMinHeight;
-        img.style['max-width']  = _this._imageMaxWidth;
-        img.style['max-height'] = _this._imageMaxHeight;
-        img.src = reader.result;
-      };
-
-      fragment.appendChild(img);
+      fragment.appendChild(obj);
     });
     _this._preview.appendChild(fragment);
   };
+
+
+  function _previewElementFactory(file) {
+    if (!(file instanceof File || file instanceof Blob)) {
+      throw TypeError('invalid argument type: required File or Blob, but found ' + file.type);
+    }
+
+    var reader = new FileReader();
+    
+    if (/image\/.*/.test(file.type)) {
+      var img = document.createElement('img');
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        img.src = reader.result;
+      };
+      return img;
+    }
+
+    if (/application\/pdf/.test(file.type)) {
+      var obj = document.createElement('object');
+      obj.type = 'application/pdf';
+      reader.readAsDataURL(file);
+      reader.onloadend = function() {
+        obj.data = reader.result;
+      };
+      return obj;
+    }
+
+    if (/text\/(.+)/.test(file.type)) {
+      var pre = document.createElement('pre');
+      reader.readAsText(file);
+      reader.onloadend = function() {
+        pre.innerHTML = _utils.escape(reader.result);
+      };
+      return pre;
+    }
+
+    throw TypeError('Not support file type: ' + file.type);
+  }
 
   var _utils = {
     stopEvent: function(e) {
@@ -239,9 +355,21 @@
         return _el;
       }
       throw TypeError('"el" is not HTMLElement or valid selector.');
+    },
+    escape: function(str) {
+      return typeof str !== 'string' ? str :
+        str.replace(/[&'`"<>]/g, function(match) {
+          return {
+            '&': '&amp;',
+            "'": '&#x27;',
+            '`': '&#x60;',
+            '"': '&quot;',
+            '<': '&lt;',
+            '>': '&gt;'
+          }[match];
+        });
     }
   };
 
   return FileDnD;
-  
 });
