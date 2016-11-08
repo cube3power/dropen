@@ -22,6 +22,10 @@
        imageMaxHeight: '100%',
      });
 
+     filednd.addEventListener('upload', function(e) {
+       console.log(e.detail);
+     });
+
      filednd.addEventListener('uploadend', function(e) {
        console.log(e.detail);
      });
