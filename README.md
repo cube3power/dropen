@@ -15,15 +15,24 @@ npm install --save @kashira2339/filednd
 - **FileDnD** constructor function.
   - **el** `string|HTMLElement|HTMLInputElement` Drop target element. ex) `#area` `input[type="file"]`
   - **configure** Configure paramaters.
-    - **preview** `string|HTMLElement|` Into preview images target element.
+    - **preview** `string|HTMLElement` Into preview images target element.
     - **dragoverClass** `string` Class of want append when dragover "el".
+    - **autoPreview** `boolean` will automatically preview when `el` get files. default true.
+    - **autoRefresh** `boolean` will automatically refresh preview element when files uploaded. default true.
     - **imageMinWidth** `string` min-width of preview's <img>. default null.
     - **imageMinHeight** `string` min-height of preview's <img>. default null.
     - **imageMaxWidth** `string` max-width of preview's <img>. default null.
     - **imageMaxHeight** `string` max-height of preview's <img>. default null.
 
 ### custom events
+- **upload** Will dispatch after File dropped or file selected.
 - **uploadend** Will dispatch after File dropped or file selected.
+
+#### flow
+file drop or change ---> dispatch **upload** ---> file refresh ---> preview ---> dispatch **uploadend**
+
+
+## Example
 
 ```html
 <style>
@@ -81,8 +90,13 @@ var instance = new FileDnD('#drop-zone', {
 /**
  * Listen custom event, define as below.
  */
+
+instance.addEventListener('upload', function(e) {
+  console.log(JSON.stringify(e.detail));
+});
+
 instance.addEventListener('uploadend', function(e) {
-  alert('Uploaded: ' + e.detail[0].name);
+  console.log(JSON.stringify(e.detail));
 });
 
 ```
