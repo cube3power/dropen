@@ -17,7 +17,7 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'test/**/*.js': 'browserify',
+      'test/**/*.js': ['browserify', 'coverage'],
       'test/**/*.html': 'html2js'
     },
 
@@ -28,8 +28,12 @@ module.exports = function(config) {
       ]
     },
 
-    reporters: ['spec'],
+    reporters: ['spec', 'coverage'],
 
+    coverageReporter: {
+      reporters: [{type: 'lcov'}]
+    },
+    
     port: 9876,
 
     colors: true,

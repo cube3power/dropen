@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "karma start --single-run=true"
+    "test": "karma start --single-run=true",
+    "codecov": "cat coverage/*/lcov.info | codecov"
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,10 @@
     "babel-plugin-espower": "^2.3.1",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
+    "codecov.io": "^0.1.6",
     "karma": "^1.3.0",
     "karma-browserify": "^5.1.0",
+    "karma-coverage": "^1.1.1",
     "karma-html2js-preprocessor": "^1.1.0",
     "karma-mocha": "^1.2.0",
     "karma-phantomjs-launcher": "^1.0.2",
