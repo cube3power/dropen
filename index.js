@@ -47,10 +47,11 @@
    * @prop  {string} [imageMinHeight] min-height of preview's <img>. default null.
    * @prop  {string} [imageMaxWidth] max-width of preview's <img>. default null.
    * @prop  {string} [imageMaxHeight] max-height of preview's <img>. default null.
+   * @example
    *   var el      = document.getElementById('drag-and-drop-zone');
    *   var preview = document.getElementById('preview-zone'); 
    *
-   *   var dnd = new FileDnD(el, {
+   *   var filednd = new FileDnD(el, {
    *     preview: preview,
    *     dragoverClass: 'emphasis',
    *     autoPreview: true
@@ -60,8 +61,13 @@
    *     imageMaxWidth: '100%',
    *     imageMaxHeight: '100%',
    *   });
-   *   dnd.addEventListener('uploadend', function(e) {
-   *     console.log(e.detail);
+   *
+   *   filednd.addEventListener('upload', function(e) {
+   *     console.log(JSON.stringify(e.detail));
+   *   });
+   *
+   *   filednd.addEventListener('uploadend', function(e) {
+   *     console.log(JSON.stringify(e.detail));
    *   });
    *
    * @constructor
@@ -118,7 +124,10 @@
       el.addEventListener('change', function(e) {
 
         _this.dispatchEvent(new CustomEvent('upload', {
-          detail: e
+          detail: {
+            currentFiles: _this.getFiles(),
+            targetFiles: e.target.files
+          }
         }));
         
         if (_this._dragoverClass) {
@@ -137,7 +146,10 @@
         }
         
         _this.dispatchEvent(new CustomEvent('uploadend', {
-          detail: _this.getFiles()
+          detail: {
+            currentFiles: _this.getFiles(),
+            targetFiles: e.target.files
+          }
         }));
       });
     } else {
@@ -157,7 +169,10 @@
         _utils.stopEvent(e);
 
         _this.dispatchEvent(new CustomEvent('upload', {
-          detail: e
+          detail: {
+            currentFiles: _this.getFiles(),
+            targetFiles: e.dataTransfer.files
+          }
         }));
         
         if (_this._dragoverClass) {
@@ -176,7 +191,10 @@
         }
         
         _this.dispatchEvent(new CustomEvent('uploadend', {
-          detail: _this.getFiles()
+          detail: {
+            currentFiles: _this.getFiles(),
+            targetFiles: e.dataTransfer.files
+          }
         }));
       });
     }

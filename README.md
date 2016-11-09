@@ -25,7 +25,14 @@ npm install --save @kashira2339/filednd
     - **imageMaxHeight** `string` max-height of preview's <img>. default null.
 
 ### custom events
+- **upload** Will dispatch after File dropped or file selected.
 - **uploadend** Will dispatch after File dropped or file selected.
+
+#### flow
+file drop or change ---> dispatch **upload** ---> file refresh ---> preview ---> dispatch **uploadend**
+
+
+## Example
 
 ```html
 <style>
@@ -83,8 +90,13 @@ var instance = new FileDnD('#drop-zone', {
 /**
  * Listen custom event, define as below.
  */
+
+instance.addEventListener('upload', function(e) {
+  console.log(JSON.stringify(e.detail));
+});
+
 instance.addEventListener('uploadend', function(e) {
-  alert('Uploaded: ' + e.detail[0].name);
+  console.log(JSON.stringify(e.detail));
 });
 
 ```

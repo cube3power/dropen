@@ -23,11 +23,11 @@
      });
 
      filednd.addEventListener('upload', function(e) {
-       console.log(e.detail);
+       console.log(JSON.stringify(e.detail));
      });
 
      filednd.addEventListener('uploadend', function(e) {
-       console.log(e.detail);
+       console.log(JSON.stringify(e.detail));
      });
     </script>
   </body>
