@@ -17,7 +17,8 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'test/**/*.js': ['browserify', 'coverage'],
+      'index.js': ['coverage'],
+      'test/**/*.js': ['browserify'],
       'test/**/*.html': 'html2js'
     },
 
