@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/dropen.js",
   "scripts": {
-    "build": "browserify src/index.js -o dist/dropen.js -t babelify --presets es2015",
+    "build": "browserify src/index.js -o dist/dropen.js -t babelify",
     "test": "karma start --single-run=true",
     "codecov": "cat coverage/*/lcov.info | codecov"
   },
@@ -38,5 +38,11 @@
     "power-assert": "^1.4.1",
     "requirejs": "^2.3.2",
     "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.16.0"
+  },
+  "browserify": {
+    "transform": [["babelify", { "presets": ["es2015"] }]]
   }
 }

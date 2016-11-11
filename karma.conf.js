@@ -9,7 +9,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'browserify'],
 
     files: [
-      'index.js',
+      'src/**/*.js',
       'test/index.html',
       'test/**/*.js'
     ],
@@ -18,7 +18,7 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'index.js': ['coverage'],
+      'src/**/*.js': ['browserify', 'coverage'],
       'test/**/*.js': ['browserify', 'coverage'],
       'test/**/*.html': 'html2js'
     },
