@@ -1,25 +1,27 @@
 {
-  "name": "@kashira2339/filednd",
-  "version": "0.1.0",
+  "name": "dropen",
+  "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/dropen.js",
   "scripts": {
+    "build": "browserify src/index.js -o dist/dropen.js -t babelify --presets es2015",
     "test": "karma start --single-run=true",
     "codecov": "cat coverage/*/lcov.info | codecov"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kashira2339/filednd.git"
+    "url": "git+https://github.com/kashira2339/dropen.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kashira2339/filednd/issues"
+    "url": "https://github.com/kashira2339/dropen/issues"
   },
-  "homepage": "https://github.com/kashira2339/filednd#readme",
+  "homepage": "https://github.com/kashira2339/dropen#readme",
   "devDependencies": {
     "babel-plugin-espower": "^2.3.1",
+    "babel-preset-es2015": "^6.18.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
     "codecov.io": "^0.1.6",
