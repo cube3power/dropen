@@ -38,7 +38,7 @@
    * and preview read file after file upload.
    *
    * @param {string|HTMLElement} el To define drag & drop file zone element or selector.
-   * @param {object} [configure] configure settings 
+   * @param {object} [configure] configure settings
    * @prop  {HTMLElement} [preview] To preview HTMLImageElement's into this element.
    * @prop  {string} [dragoverClass] Adding class to dndzone when dispached dragover event on dndzone.
    * @prop  {boolean} [autoPreview] will automatically preview when `el` get files. default true.
@@ -121,11 +121,11 @@
         el = _this._el;
 
     if (this._isFileElement) {
-      el.addEventListener('change', this.onChangeDefault);
+      el.addEventListener('change', this.onChangeDefault.bind(this));
     } else {
-      el.addEventListener('dragover', this.onDragoverDefault);
-      el.addEventListener('dragleave', this.onDragleaveDefault);
-      el.addEventListener('drop', this.onDropDefault);
+      el.addEventListener('dragover', this.onDragoverDefault.bind(this));
+      el.addEventListener('dragleave', this.onDragleaveDefault.bind(this));
+      el.addEventListener('drop', this.onDropDefault.bind(this));
     }
   };
 
@@ -241,9 +241,9 @@
   };
 
   /**
-   * Get HTMLElement: drag and drop zone's element.
+   * Get HTMLElement: `el` drag and drop zone's element.
    */
-  FileDnD.prototype.getDragAndDropZone = function() {
+  FileDnD.prototype.getEl = function() {
     return this._el;
   };
 
@@ -316,7 +316,7 @@
   };
 
   /**
-   * Preview uplaoded files.
+   * Preview uploaded files.
    */
   FileDnD.prototype.appendToPreviewHTML = function() {
     var _this = this;
@@ -370,7 +370,7 @@
       var pre = document.createElement('pre');
       reader.readAsText(file);
       reader.onloadend = function() {
-        pre.innerHTML = _utils.escape(reader.result);
+        pre.innerHTML = _utils.escapeHTML(reader.result);
       };
       return pre;
     }
@@ -414,7 +414,7 @@
       }
       throw TypeError('"el" is not HTMLElement or valid selector.');
     },
-    escape: function(str) {
+    escapeHTML: function(str) {
       return typeof str !== 'string' ? str :
         str.replace(/[&'`"<>]/g, function(match) {
           return {
