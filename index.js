@@ -38,7 +38,7 @@
    * and preview read file after file upload.
    *
    * @param {string|HTMLElement} el To define drag & drop file zone element or selector.
-   * @param {object} [configure] configure settings 
+   * @param {object} [configure] configure settings
    * @prop  {HTMLElement} [preview] To preview HTMLImageElement's into this element.
    * @prop  {string} [dragoverClass] Adding class to dndzone when dispached dragover event on dndzone.
    * @prop  {boolean} [autoPreview] will automatically preview when `el` get files. default true.
@@ -121,89 +121,129 @@
         el = _this._el;
 
     if (this._isFileElement) {
-      el.addEventListener('change', function(e) {
-
-        _this.dispatchEvent(new CustomEvent('upload', {
-          detail: {
-            currentFiles: _this.getFiles(),
-            targetFiles: e.target.files
-          }
-        }));
-        
-        if (_this._dragoverClass) {
-          _utils.removeClass(el, _this._dragoverClass);
-        }
-
-        if (_this._autoRefresh) {
-          _this.clearFiles();
-          _this.applyToHTML();
-        }
-        
-        _this.addFiles(e.target.files);
-
-        if (_this._autoPreview) {
-          _this.applyToHTML();
-        }
-        
-        _this.dispatchEvent(new CustomEvent('uploadend', {
-          detail: {
-            currentFiles: _this.getFiles(),
-            targetFiles: e.target.files
-          }
-        }));
-      });
+      el.addEventListener('change', this.onChangeDefault.bind(this));
     } else {
-      el.addEventListener('dragover', function(e) {
-        _utils.stopEvent(e);
-        if (_this._dragoverClass) {
-          _utils.addClass(el, _this._dragoverClass);
-        }
-      });
-      el.addEventListener('dragleave', function(e) {
-        _utils.stopEvent(e);
-        if (_this._dragoverClass) {
-          _utils.removeClass(el, _this._dragoverClass);
-        }
-      });
-      el.addEventListener('drop', function(e) {
-        _utils.stopEvent(e);
-
-        _this.dispatchEvent(new CustomEvent('upload', {
-          detail: {
-            currentFiles: _this.getFiles(),
-            targetFiles: e.dataTransfer.files
-          }
-        }));
-        
-        if (_this._dragoverClass) {
-          _utils.removeClass(el, _this._dragoverClass);
-        }
-
-        if (_this._autoRefresh) {
-          _this.clearFiles();
-          _this.applyToHTML();
-        }
-        
-        _this.addFiles(e.dataTransfer.files);
-        
-        if (_this._autoPreview) {
-          _this.applyToHTML();
-        }
-        
-        _this.dispatchEvent(new CustomEvent('uploadend', {
-          detail: {
-            currentFiles: _this.getFiles(),
-            targetFiles: e.dataTransfer.files
-          }
-        }));
-      });
+      el.addEventListener('dragover', this.onDragoverDefault.bind(this));
+      el.addEventListener('dragleave', this.onDragleaveDefault.bind(this));
+      el.addEventListener('drop', this.onDropDefault.bind(this));
     }
   };
 
   /**
-   * Get HTMLElement: drag and drop zone's element.
+   * when this instance's `el` is input[type="files"] or that selecter,
+   * this function called as `el`'s onchange event listener.
+   *
+   * @param {Event} e input[type=\"file\"] `onchange` event.
    */
-  FileDnD.prototype.getDragAndDropZone = function() {
+  FileDnD.prototype.onChangeDefault = function(e) {
+    var _this = this,
+        el = _this._el;
+    _this.dispatchEvent(new CustomEvent('upload', {
+      detail: {
+        currentFiles: _this.getFiles(),
+        targetFiles: e.target.files
+      }
+    }));
+    
+    if (_this._dragoverClass) {
+      _utils.removeClass(el, _this._dragoverClass);
+    }
+
+    if (_this._autoRefresh) {
+      _this.clearFiles();
+      _this.applyToHTML();
+    }
+    
+    _this.addFiles(e.target.files);
+
+    if (_this._autoPreview) {
+      _this.applyToHTML();
+    }
+    
+    _this.dispatchEvent(new CustomEvent('uploadend', {
+      detail: {
+        currentFiles: _this.getFiles(),
+        targetFiles: e.target.files
+      }
+    }));
+  };
+
+  /**
+   * when this instance's `el` is normal HTMLElement or that selecter,
+   * this function called as `el`'s ondragover event listener.
+   *
+   * @param {Event} e this.el's `ondragover` event.
+   */
+  FileDnD.prototype.onDragoverDefault = function(e) {
+    var _this = this,
+        el = _this._el;
+    _utils.stopEvent(e);
+    if (_this._dragoverClass) {
+      _utils.addClass(el, _this._dragoverClass);
+    }
+  };
+
+  /**
+   * when this instance's `el` is normal HTMLElement or that selecter,
+   * this function called as `el`'s ondragleave event listener.
+   *
+   * @param {Event} e this.el's `ondragleave` event.
+   */
+  FileDnD.prototype.onDragleaveDefault = function(e) {
+    var _this = this,
+        el = _this._el;
+    _utils.stopEvent(e);
+    if (_this._dragoverClass) {
+      _utils.removeClass(el, _this._dragoverClass);
+    }
+  };
+
+  /**
+   * when this instance's `el` is normal HTMLElement or that selecter,
+   * this function called as `el`'s ondragleave event listener.
+   *
+   * @param {Event} e this.el's `ondrop` event.
+   */
+  FileDnD.prototype.onDropDefault = function(e) {
+    var _this = this,
+        el = _this._el;
+    
+    _utils.stopEvent(e);
+
+    _this.dispatchEvent(new CustomEvent('upload', {
+      detail: {
+        currentFiles: _this.getFiles(),
+        targetFiles: e.dataTransfer.files
+      }
+    }));
+    
+    if (_this._dragoverClass) {
+      _utils.removeClass(el, _this._dragoverClass);
+    }
+
+    if (_this._autoRefresh) {
+      _this.clearFiles();
+      _this.applyToHTML();
+    }
+    
+    _this.addFiles(e.dataTransfer.files);
+    
+    if (_this._autoPreview) {
+      _this.applyToHTML();
+    }
+    
+    _this.dispatchEvent(new CustomEvent('uploadend', {
+      detail: {
+        currentFiles: _this.getFiles(),
+        targetFiles: e.dataTransfer.files
+      }
+    }));
+  };
+
+  /**
+   * Get HTMLElement: `el` drag and drop zone's element.
+   */
+  FileDnD.prototype.getEl = function() {
     return this._el;
   };
 
@@ -276,7 +316,7 @@
   };
 
   /**
-   * Preview uplaoded files.
+   * Preview uploaded files.
    */
   FileDnD.prototype.appendToPreviewHTML = function() {
     var _this = this;
@@ -330,7 +370,7 @@
       var pre = document.createElement('pre');
       reader.readAsText(file);
       reader.onloadend = function() {
-        pre.innerHTML = _utils.escape(reader.result);
+        pre.innerHTML = _utils.escapeHTML(reader.result);
       };
       return pre;
     }
@@ -374,7 +414,7 @@
       }
       throw TypeError('"el" is not HTMLElement or valid selector.');
     },
-    escape: function(str) {
+    escapeHTML: function(str) {
       return typeof str !== 'string' ? str :
         str.replace(/[&'`"<>]/g, function(match) {
           return {
