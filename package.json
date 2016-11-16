@@ -1,10 +1,10 @@
 {
   "name": "dropen",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/dropen.js",
   "scripts": {
-    "start": "watchify src/index.js -o dist/dropen.js -t babelify -v",        
+    "start": "watchify src/index.js -o dist/dropen.js -t babelify -v",
     "build": "browserify src/index.js -o dist/dropen.js -t babelify",
     "test": "karma start --single-run=true",
     "codecov": "cat coverage/*/lcov.info | codecov"
