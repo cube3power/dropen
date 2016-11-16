@@ -1,12 +1,12 @@
 {
-  "name": "kashira2339-filednd",
-  "description": "Filednd is lightweight JavaScript ui library for File Drag & Drop.",
-  "main": "index.js",
+  "name": "dropen",
+  "description": "Dropen is lightweight JavaScript ui library for File Drag & Drop.",
+  "main": "disr/dropen.js",
   "authors": [
     "kashira2339"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/kashira2339/filednd",
+  "homepage": "https://github.com/kashira2339/dropen",
   "private": true,
   "ignore": [
     "**/.*",
