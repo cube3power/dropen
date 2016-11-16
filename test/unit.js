@@ -166,18 +166,6 @@ describe("Dropen", function() {
     assert(previewZone.innerHTML === '');
   });
 
-    it("#appendToPreviewHTML", function() {
-    var previewZone = instance.getPreview();
-    instance.addFiles([
-      files.text(),
-      files.text(),
-      files.text(),
-    ]);
-    assert(previewZone.innerHTML === '');
-    instance.appendToPreviewHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
-  });
-
   it("#applyToHTML", function() {
     var previewZone = instance.getPreview();
     instance.addFiles([
