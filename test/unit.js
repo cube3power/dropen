@@ -1,6 +1,7 @@
-var assert  = require('power-assert');
-var FileDnD = require('../index');
-var event = {
+import assert from 'power-assert'
+import Dropen from '../src/index'
+
+const event = {
   dataTransfer: {
     files: [
       new Blob(['test text'], {type:'text/plain'}),
@@ -25,155 +26,171 @@ var files = {
 };
 
 
-describe("FileDnD", function() {
-  var filednd;
+describe("Dropen", function() {
+  var instance;
   
   beforeEach(function() {
     document.body.innerHTML = window.__html__['test/index.html'];
 
-    filednd = new FileDnD('#drop-zone', {
+    instance = new Dropen('#drop-zone', {
       preview: '#preview-zone'
     });
   });
   
-  it("new FileDnD()", function () {
+  it("new Dropen()", function () {
 
     var dropZoneElm = document.getElementById('drop-zone'),
         dropFileElm = document.getElementById('drop-file');
     
-    assert(new FileDnD(dropZoneElm, {}));
-    assert(new FileDnD(dropFileElm, {}));
-    assert(new FileDnD('#drop-file', {}));
-    assert(new FileDnD('#drop-zone', {}));
+    assert(new Dropen(dropZoneElm, {}));
+    assert(new Dropen(dropFileElm, {}));
+    assert(new Dropen('#drop-file', {}));
+    assert(new Dropen('#drop-zone', {}));
   });
 
-  it('#onChangeDefault', function() {
-    var filednd = new FileDnD('#drop-file', {});
-    filednd.onChangeDefault(event);
-    assert(filednd.getFiles().length === 3);
+  it('#onChange', function() {
+    var instance = new Dropen('#drop-file', {});
+    instance.onChange(event);
+    assert(instance.getFiles().length === 3);
+    
+    instance.onChange(event);
+    assert(instance.getFiles().length === 3);
   });
 
-  it('#onDragoverDefault', function() {
-    var filednd = new FileDnD('#drop-zone', {
+  it('#onChange(autoRefresh=false)', function() {
+    var instance = new Dropen('#drop-file', {
+      autoRefresh: false
+    });
+    instance.onChange(event);
+    assert(instance.getFiles().length === 3);
+
+    instance.onChange(event);
+    assert(instance.getFiles().length === 6);
+  });
+
+  it('#onDragover', function() {
+    var instance = new Dropen('#drop-zone', {
       dragoverClass: 'testclass'
     });
-    filednd.onDragoverDefault(event);
-    assert(filednd.getEl().classList.contains('testclass'));
+    instance.onDragover(event);
+    assert(instance.getEl().classList.contains('testclass'));
   });
 
-  it('#onDragleaveDefault', function() {
-    var filednd = new FileDnD('#drop-zone', {
+  it('#onDragleave', function() {
+    var instance = new Dropen('#drop-zone', {
       dragoverClass: 'testclass'
     });
 
-    filednd.onDragoverDefault(event);
-    assert(filednd.getEl().classList.contains('testclass'));
-    filednd.onDragleaveDefault(event);
-    assert(!filednd.getEl().classList.contains('testclass'));
+    instance.onDragover(event);
+    assert(instance.getEl().classList.contains('testclass'));
+    instance.onDragleave(event);
+    assert(!instance.getEl().classList.contains('testclass'));
 
   });
 
-  it('#onDropDefault', function() {
-    var filednd = new FileDnD('#drop-zone', {});
-    filednd.onDropDefault(event);
-    assert(filednd.getFiles().length === 2);
+  it('#onDrop', function() {
+    var instance = new Dropen('#drop-zone', {});
+    instance.onDrop(event);
+    assert(instance.getFiles().length === 2);
+    
+    instance.onDrop(event);
+    assert(instance.getFiles().length === 2);
+  });
+
+  it('#onDrop(autoRefresh=false)', function() {
+    var instance = new Dropen('#drop-zone', {
+      autoRefresh: false
+    });
+    instance.onDrop(event);
+    assert(instance.getFiles().length === 2);
+
+    instance.onDrop(event);
+    assert(instance.getFiles().length === 4);
   });
 
   it("#addFiles", function() {
-    filednd.addFiles([
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    assert(filednd._files.length === 3);
-    filednd.addFiles([
+    assert(instance._files.length === 3);
+    instance.addFiles([
       files.text(),
       files.text(),
     ]);
-    assert(filednd._files.length === 5);
+    assert(instance._files.length === 5);
   });
   
   it("#getFiles", function() {
-    filednd.addFiles([
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    assert(filednd.getFiles().length === 3);
+    assert(instance.getFiles().length === 3);
   });
 
   it("#clearFiles", function() {
-    filednd.addFiles([
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    filednd.clearFiles();
-    assert(filednd.getFiles().length === 0);
+    instance.clearFiles();
+    assert(instance.getFiles().length === 0);
   });
 
   it("#appendToPreviewHTML", function() {
-    var previewZone = filednd.getPreviewZone();
-    filednd.addFiles([
+    var previewZone = instance.getPreview();
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
     assert(previewZone.innerHTML === '');
-    filednd.appendToPreviewHTML();
+    instance.appendToPreviewHTML();
     assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
   });
 
   it("#removeFromPreviewHTML", function() {
-    var previewZone = filednd.getPreviewZone();
-    filednd.addFiles([
+    var previewZone = instance.getPreview();
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    filednd.appendToPreviewHTML();
+    instance.appendToPreviewHTML();
     assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
-    filednd.removeFromPreviewHTML();
+    instance.removeFromPreviewHTML();
     assert(previewZone.innerHTML === '');
-  });
-
-    it("#appendToPreviewHTML", function() {
-    var previewZone = filednd.getPreviewZone();
-    filednd.addFiles([
-      files.text(),
-      files.text(),
-      files.text(),
-    ]);
-    assert(previewZone.innerHTML === '');
-    filednd.appendToPreviewHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
   });
 
   it("#applyToHTML", function() {
-    var previewZone = filednd.getPreviewZone();
-    filednd.addFiles([
+    var previewZone = instance.getPreview();
+    instance.addFiles([
       files.text(),
       files.text(),
     ]);
-    filednd.applyToHTML();
+    instance.applyToHTML();
     assert(previewZone.innerHTML === '<pre></pre><pre></pre>');
-    filednd.clearFiles();
+    instance.clearFiles();
 
-    filednd.addFiles([
+    instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    filednd.applyToHTML();
+    instance.applyToHTML();
     assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
-    filednd.clearFiles();
+    instance.clearFiles();
     
-    filednd.addFiles([
+    instance.addFiles([
       files.text(),
     ]);
-    filednd.applyToHTML();
+    instance.applyToHTML();
     assert(previewZone.innerHTML === '<pre></pre>');
-    filednd.clearFiles();
+    instance.clearFiles();
   });
 
 });

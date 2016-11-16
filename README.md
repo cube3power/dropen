@@ -1,18 +1,18 @@
-# FileDnD [![Build Status](https://travis-ci.org/kashira2339/filednd.svg?branch=master)](https://travis-ci.org/kashira2339/filednd)
+# Dropen [![Build Status](https://travis-ci.org/kashira2339/dropen.svg?branch=master)](https://travis-ci.org/kashira2339/dropen)
 
-**filednd** is lightweight JavaScript ui library for File Drag & Drop.
+**dropen** is lightweight JavaScript ui library for File Drag & Drop.
 
 ## Installation
 
 ```bash
-npm install --save @kashira2339/filednd
+npm install --save dropen
 ```
 
 ## Usage
 
 ### function & properties
 
-- **FileDnD** constructor function.
+- **Dropen** constructor function.
   - **el** `string|HTMLElement|HTMLInputElement` Drop target element. ex) `#area` `input[type="file"]`
   - **configure** Configure paramaters.
     - **preview** `string|HTMLElement` Into preview images target element.
@@ -30,7 +30,6 @@ npm install --save @kashira2339/filednd
 
 #### flow
 file drop or change ---> dispatch **upload** ---> file refresh ---> preview ---> dispatch **uploadend**
-
 
 ## Example
 
@@ -52,9 +51,9 @@ file drop or change ---> dispatch **upload** ---> file refresh ---> preview --->
 
 ```js
 // if use javascript module bundler
-var FileDnD = require('@kashira2339/filednd');
+var Dropen = require('dropen');
 
-var instance = new FileDnD('#drop-zone', {
+var instance = new Dropen('#drop-zone', {
 
     /**
      * for preview HTMLElement or selector.
@@ -91,18 +90,17 @@ var instance = new FileDnD('#drop-zone', {
  * Listen custom event, define as below.
  */
 
-instance.addEventListener('upload', function(e) {
-  console.log(JSON.stringify(e.detail));
+instance.on('upload', function(e) {
+  console.log(JSON.stringify(e));
 });
 
-instance.addEventListener('uploadend', function(e) {
-  console.log(JSON.stringify(e.detail));
+instance.on('uploadend', function(e) {
+  console.log(JSON.stringify(e));
 });
 
 ```
 
 ![demo](https://cloud.githubusercontent.com/assets/7392701/19778989/2a93eefa-9cba-11e6-84fd-19c0f0060c57.gif)
-
 
 ---
 
