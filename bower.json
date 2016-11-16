@@ -1,18 +1,20 @@
 {
   "name": "dropen",
   "description": "Dropen is lightweight JavaScript ui library for File Drag & Drop.",
-  "main": "disr/dropen.js",
+  "main": "dist/dropen.js",
   "authors": [
     "kashira2339"
   ],
   "license": "MIT",
   "homepage": "https://github.com/kashira2339/dropen",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
+  ],
+  "keywords": [
+    "file"
   ]
 }
