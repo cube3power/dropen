@@ -1,28 +1,10 @@
-export const stopEvent = function(e) {
-  if (e.stopPropagation) {
-    e.stopPropagation();
-  }
-  if (e.preventDefault) {
-    e.preventDefault();
-  }
-};
+import { escapeHTML } from './utils'
 
-export const addClass = function(to, className) {
-  if (className) {
-    if (!to.classList.contains(className)) {
-      to.classList.add(className);
-    }
-  }
-};
+const window   = global;
+const document = window.document;
 
 
-export const removeClass = function(to, className) {
-  if (className) {
-    if (to.classList.contains(className)) {
-      to.classList.remove(className);
-    }
-  }
-};
+
 
 export const makeElement = function(el) {
   if (typeof el === 'undefined') {
@@ -41,19 +23,7 @@ export const makeElement = function(el) {
   throw TypeError('"el" is not HTMLElement or valid selector.');
 };
 
-export const escapeHTML = function(str) {
-  return typeof str !== 'string' ? str :
-    str.replace(/[&'`"<>]/g, function(match) {
-      return {
-        '&': '&amp;',
-        "'": '&#x27;',
-        '`': '&#x60;',
-        '"': '&quot;',
-        '<': '&lt;',
-        '>': '&gt;'
-      }[match];
-    });
-};
+
 
 
 export const createPreviewElement = function(file) {
@@ -93,3 +63,4 @@ export const createPreviewElement = function(file) {
 
   throw TypeError('Not support file type: ' + file.type);
 };
+

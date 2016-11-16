@@ -11,9 +11,10 @@
 
     <div id="preview-zone" class="simple-card">Will preview image.</div>
 
-    <script src="../../index.js"></script>
+    <script src="../../dist/dropen.js"></script>
+
     <script>
-     var filednd = new FileDnD('#drop-zone', {
+     var filednd = new Dropen('#drop-zone', {
        preview: '#preview-zone',
        dragoverClass: 'emphasis',
        imageMinWidth: '100%',
@@ -22,12 +23,12 @@
        imageMaxHeight: '100%',
      });
 
-     filednd.addEventListener('upload', function(e) {
-       console.log(JSON.stringify(e.detail));
+     filednd.on('upload', function(e) {
+       console.log(JSON.stringify(e));
      });
 
-     filednd.addEventListener('uploadend', function(e) {
-       console.log(JSON.stringify(e.detail));
+     filednd.on('uploadend', function(e) {
+       console.log(JSON.stringify(e));
      });
     </script>
   </body>
