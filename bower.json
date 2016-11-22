@@ -1,7 +1,7 @@
 {
   "name": "dropen",
   "description": "Dropen is lightweight JavaScript ui library for File Drag & Drop.",
-  "main": "lib/dropen.js",
+  "main": "dropen.js",
   "authors": [
     "kashira2339"
   ],

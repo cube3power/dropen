@@ -2,16 +2,13 @@
   "name": "dropen",
   "version": "1.0.1",
   "description": "",
-  "main": "lib/index.js",
+  "main": "dropen.js",
   "module": "src/index.js",
   "jsnext:main": "src/index.js",
-  "files": [
-    "lib"
-  ],
   "scripts": {
-    "prebuild": "rimraf lib/*",
-    "start": "watchify src/index.js -o lib/index.js -t babelify -v",
-    "build": "browserify src/index.js -o lib/index.js -t babelify",
+    "prebuild": "rimraf dropen.js",
+    "start": "watchify src/index.js -o dropen.js -t babelify -v",
+    "build": "browserify src/index.js -o dropen.js -t babelify",
     "test": "karma start --single-run=true",
     "codecov": "cat coverage/*/lcov.info | codecov",
     "prepublish": "npm run build",
