@@ -1,9 +1,9 @@
 {
   "name": "dropen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/dropen.js",
-  "files": [ 
+  "files": [
     "dist"
   ],
   "scripts": {
