@@ -10,7 +10,9 @@
     "start": "watchify src/index.js -o dist/dropen.js -t babelify -v",
     "build": "browserify src/index.js -o dist/dropen.js -t babelify",
     "test": "karma start --single-run=true",
-    "codecov": "cat coverage/*/lcov.info | codecov"
+    "codecov": "cat coverage/*/lcov.info | codecov",
+    "prepublish": "npm run build",
+    "preversion": "npm run build"
   },
   "repository": {
     "type": "git",
