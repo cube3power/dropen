@@ -9,7 +9,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'browserify'],
 
     files: [
-      'dist/dropen.js',
+      'lib/index.js',
       'test/index.html',
       'test/**/*.js'
     ],
