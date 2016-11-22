@@ -2,13 +2,16 @@
   "name": "dropen",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/dropen.js",
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "jsnext:main": "src/index.js",
   "files": [
-    "dist"
+    "lib"
   ],
   "scripts": {
-    "start": "watchify src/index.js -o dist/dropen.js -t babelify -v",
-    "build": "browserify src/index.js -o dist/dropen.js -t babelify",
+    "prebuild": "rimraf lib/*",
+    "start": "watchify src/index.js -o lib/index.js -t babelify -v",
+    "build": "browserify src/index.js -o lib/index.js -t babelify",
     "test": "karma start --single-run=true",
     "codecov": "cat coverage/*/lcov.info | codecov",
     "prepublish": "npm run build",
@@ -43,10 +46,21 @@
     "phantomjs": "^2.1.7",
     "power-assert": "^1.4.1",
     "requirejs": "^2.3.2",
+    "rimraf": "^2.5.4",
     "watchify": "^3.7.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.16.0"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest"
+    ]
   },
   "browserify": {
     "transform": [
