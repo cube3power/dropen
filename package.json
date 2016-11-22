@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/dropen.js",
+  "files": [ 
+    "dist"
+  ],
   "scripts": {
     "start": "watchify src/index.js -o dist/dropen.js -t babelify -v",
     "build": "browserify src/index.js -o dist/dropen.js -t babelify",
