@@ -2,12 +2,11 @@
   "name": "dropen",
   "version": "1.0.5",
   "description": "",
-  "main": "./dropen.js",
-  "files": [
-    "dropen.js"
-  ],
+  "main": "./lib/dropen.js",
+  "jsnext:main": "./src/index.js",
+  "browser": "./lib/dropen.js",
   "scripts": {
-    "prebuild": "rimraf ./dropen.js",
+    "prebuild": "rimraf ./lib/*",
     "start": "watchify src/index.js -o ./dropen.js -t babelify -v",
     "build": "browserify src/index.js -o ./dropen.js -t babelify",
     "test": "karma start --single-run=true",
