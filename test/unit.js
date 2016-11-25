@@ -1,5 +1,5 @@
 import assert from 'power-assert'
-import Dropen from '../src/index'
+import Dropen from '../lib/bundle'
 
 const event = {
   dataTransfer: {

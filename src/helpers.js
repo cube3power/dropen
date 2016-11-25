@@ -1,9 +1,5 @@
 import { escapeHTML } from './utils'
 
-const window   = global;
-const document = window.document;
-
-
 
 
 export const makeElement = function(el) {
@@ -14,6 +10,9 @@ export const makeElement = function(el) {
     return el;
   }
   if (typeof el === 'string') {
+    if (!document) {
+      throw Error('Not found `document` object.');
+    }
     var _el = document.querySelector(el);
     if (!_el) {
       throw Error('Not found in document.querySelector(el)');
@@ -34,6 +33,9 @@ export const createPreviewElement = function(file) {
   var reader = new FileReader();
   
   if (/image\/.*/.test(file.type)) {
+    if (!document) {
+      throw Error('Not found `document` object.');
+    }
     var img = document.createElement('img');
     reader.readAsDataURL(file);
     reader.onloadend = function() {
@@ -43,6 +45,9 @@ export const createPreviewElement = function(file) {
   }
 
   if (/application\/pdf/.test(file.type)) {
+    if (!document) {
+      throw Error('Not found `document` object.');
+    }
     var obj = document.createElement('object');
     obj.type = 'application/pdf';
     reader.readAsDataURL(file);
@@ -53,6 +58,9 @@ export const createPreviewElement = function(file) {
   }
 
   if (/text\/(.+)/.test(file.type)) {
+    if (!document) {
+      throw Error('Not found `document` object.');
+    }
     var pre = document.createElement('pre');
     reader.readAsText(file);
     reader.onloadend = function() {

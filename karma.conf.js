@@ -6,10 +6,9 @@ module.exports = function(config) {
 
     basePath: '',
 
-    frameworks: ['mocha', 'browserify'],
+    frameworks: ['mocha'],
 
     files: [
-      'dropen.js',
       'test/index.html',
       'test/**/*.js'
     ],
@@ -18,16 +17,8 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
-      'src/**/*.js': ['browserify', 'coverage'],
-      'test/**/*.js': ['browserify', 'coverage'],
+      'test/**/*.js': ['webpack', 'coverage'],
       'test/**/*.html': 'html2js'
-    },
-
-    browserify: {
-      debug: true,
-      transform: [
-        ['babelify', {plugins: ['babel-plugin-espower']}]
-      ]
     },
 
     reporters: ['spec', 'coverage'],
@@ -48,6 +39,8 @@ module.exports = function(config) {
 
     singleRun: false,
 
+    webpack: require('./webpack.config.js'),
+
     concurrency: Infinity
-  })
+  });
 }

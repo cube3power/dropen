@@ -323,6 +323,8 @@ class Dropen extends EventEmitter {
   };
 }
 
-global.Dropen = Dropen;
+if (window) {
+  window.Dropen = Dropen;
+}
 
 export default Dropen;
