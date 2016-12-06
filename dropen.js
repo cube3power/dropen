@@ -1,0 +1,1 @@
+console.error("Error: Cannot find module '/Users/taka/GIT/dropen/node_modules/babelify/index.js' from '/Users/taka/GIT/dropen'");

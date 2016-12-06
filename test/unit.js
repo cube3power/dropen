@@ -1,5 +1,5 @@
 import assert from 'power-assert'
-import Dropen from '../lib/bundle'
+import dropen from '../lib/bundle'
 
 const event = {
   dataTransfer: {
@@ -20,7 +20,7 @@ const event = {
   }
 };
 var files = {
-  text: function() {
+  text() {
     return new Blob(['test text'], {type:'text/plain'});
   }
 };
@@ -32,25 +32,31 @@ describe("Dropen", function() {
   beforeEach(function() {
     document.body.innerHTML = window.__html__['test/index.html'];
 
-    instance = new Dropen('#drop-zone', {
+    instance = dropen('#drop-zone', {
       preview: '#preview-zone'
     });
   });
-  
-  it("new Dropen()", function () {
+
+  it("dropen()", function () {
 
     var dropZoneElm = document.getElementById('drop-zone'),
         dropFileElm = document.getElementById('drop-file');
-    
-    assert(new Dropen(dropZoneElm, {}));
-    assert(new Dropen(dropFileElm, {}));
-    assert(new Dropen('#drop-file', {}));
-    assert(new Dropen('#drop-zone', {}));
-  });
 
+    assert(dropen(dropZoneElm, {}));
+    assert(dropen(dropFileElm, {}));
+    assert(dropen('#drop-file', {}));
+    assert(dropen('#drop-zone', {}));
+    assert(dropen('#drop-zone')
+           .config({
+             dragoverClass: 'hoge'
+           })
+           ._dragoverClass === 'hoge');
+  });
+  
   it('#onChange', function() {
-    var instance = new Dropen('#drop-file', {});
+    var instance = dropen('#drop-file', {});
     instance.onChange(event);
+
     assert(instance.getFiles().length === 3);
     
     instance.onChange(event);
@@ -58,7 +64,7 @@ describe("Dropen", function() {
   });
 
   it('#onChange(autoRefresh=false)', function() {
-    var instance = new Dropen('#drop-file', {
+    var instance = dropen('#drop-file', {
       autoRefresh: false
     });
     instance.onChange(event);
@@ -69,27 +75,27 @@ describe("Dropen", function() {
   });
 
   it('#onDragover', function() {
-    var instance = new Dropen('#drop-zone', {
+    var instance = dropen('#drop-zone', {
       dragoverClass: 'testclass'
     });
     instance.onDragover(event);
-    assert(instance.getEl().classList.contains('testclass'));
+    assert(instance._el.classList.contains('testclass'));
   });
 
   it('#onDragleave', function() {
-    var instance = new Dropen('#drop-zone', {
+    var instance = dropen('#drop-zone', {
       dragoverClass: 'testclass'
     });
 
     instance.onDragover(event);
-    assert(instance.getEl().classList.contains('testclass'));
+    assert(instance._el.classList.contains('testclass'));
     instance.onDragleave(event);
-    assert(!instance.getEl().classList.contains('testclass'));
+    assert(!instance._el.classList.contains('testclass'));
 
   });
 
   it('#onDrop', function() {
-    var instance = new Dropen('#drop-zone', {});
+    var instance = dropen('#drop-zone', {});
     instance.onDrop(event);
     assert(instance.getFiles().length === 2);
     
@@ -98,7 +104,7 @@ describe("Dropen", function() {
   });
 
   it('#onDrop(autoRefresh=false)', function() {
-    var instance = new Dropen('#drop-zone', {
+    var instance = dropen('#drop-zone', {
       autoRefresh: false
     });
     instance.onDrop(event);
@@ -131,66 +137,65 @@ describe("Dropen", function() {
     assert(instance.getFiles().length === 3);
   });
 
-  it("#clearFiles", function() {
+  it("#remove", function() {
+    var previewZone = instance._preview;
     instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    instance.clearFiles();
-    assert(instance.getFiles().length === 0);
+    instance.remove(1);
+    assert(previewZone.getElementsByTagName('pre').length === 2);
   });
 
-  it("#appendToPreviewHTML", function() {
-    var previewZone = instance.getPreview();
+  it("#apply", function() {
+    var previewZone = instance._preview;
     instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    assert(previewZone.innerHTML === '');
-    instance.appendToPreviewHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
+    assert(previewZone.getElementsByTagName('pre').length === 0);
+    instance.apply();
+    assert(previewZone.getElementsByTagName('pre').length === 3);
   });
 
-  it("#removeFromPreviewHTML", function() {
-    var previewZone = instance.getPreview();
+  it("#clear", function() {
+    var previewZone = instance._preview;
     instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    instance.appendToPreviewHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
-    instance.removeFromPreviewHTML();
-    assert(previewZone.innerHTML === '');
+    instance.apply();
+    assert(previewZone.getElementsByTagName('pre').length === 3);
+    instance.clear();
+    assert(previewZone.getElementsByTagName('pre').length === 0);
   });
 
-  it("#applyToHTML", function() {
-    var previewZone = instance.getPreview();
+  it("#apply, #clear", function() {
+    var previewZone = instance._preview;
     instance.addFiles([
       files.text(),
       files.text(),
     ]);
-    instance.applyToHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre>');
-    instance.clearFiles();
+    instance.apply();
+    assert(previewZone.getElementsByTagName('pre').length === 2);
+    instance.clear();
 
     instance.addFiles([
       files.text(),
       files.text(),
       files.text(),
     ]);
-    instance.applyToHTML();
-    assert(previewZone.innerHTML === '<pre></pre><pre></pre><pre></pre>');
-    instance.clearFiles();
+    instance.apply();
+    assert(previewZone.getElementsByTagName('pre').length === 3);
+    instance.clear();
     
-    instance.addFiles([
-      files.text(),
-    ]);
-    instance.applyToHTML();
-    assert(previewZone.innerHTML === '<pre></pre>');
-    instance.clearFiles();
+    instance.addFiles([files.text()]);
+    instance.apply();
+    assert(previewZone.getElementsByTagName('pre').length === 1);
+    instance.clear();
   });
 
 });
